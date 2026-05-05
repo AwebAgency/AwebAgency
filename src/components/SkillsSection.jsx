@@ -1,133 +1,246 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Code2, Server, Wrench, Layers } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useReveal, rs } from "../hooks/useReveal";
 
-const categoryConfig = {
-  all:      { label: "Tout",     icon: Layers, color: "text-primary",      bg: "bg-primary/10" },
-  frontend: { label: "Frontend", icon: Code2,  color: "text-violet-400",   bg: "bg-violet-400/10" },
-  backend:  { label: "Backend",  icon: Server, color: "text-blue-400",     bg: "bg-blue-400/10" },
-  tools:    { label: "Outils",   icon: Wrench, color: "text-emerald-400",  bg: "bg-emerald-400/10" },
-};
-
-const categoryBarColor = {
-  frontend: "from-violet-500 to-purple-400",
-  backend:  "from-blue-500 to-cyan-400",
-  tools:    "from-emerald-500 to-teal-400",
-};
-
-const skills = [
-  // Frontend
-  { name: "HTML/CSS",     level: 95, category: "frontend" },
-  { name: "JavaScript",   level: 90, category: "frontend" },
-  { name: "React",        level: 90, category: "frontend" },
-  // Backend
-  { name: "Node.js",      level: 80, category: "backend" },
-  { name: "Express",      level: 75, category: "backend" },
-  { name: "MongoDB",      level: 70, category: "backend" },
-  // Tools
-  { name: "Git/GitHub",   level: 90, category: "tools" },
-  { name: "Docker",       level: 70, category: "tools" },
-  { name: "VS Code",      level: 95, category: "tools" },
+const brands = [
+  {
+    name: "Moovera",
+    image: "/images/moovera.png",
+    category: "Boutique · Réparation Trottinettes",
+    initials: "MV",
+    color: "#3b82f6",
+    bg: "rgba(59,130,246,0.10)",
+    border: "rgba(59,130,246,0.22)",
+    projectAnchor: "project-moovera",
+  },
+  {
+    name: "ACAN",
+    image: "/images/acan.png",
+    category: "Site Associatif",
+    initials: "AC",
+    color: "#10b981",
+    bg: "rgba(16,185,129,0.10)",
+    border: "rgba(16,185,129,0.22)",
+    projectAnchor: "project-acan",
+  },
+  {
+    name: "Société Forestière",
+    image: "/images/societeforestiere.png",
+    category: "Site Vitrine",
+    initials: "SF",
+    color: "#22c55e",
+    bg: "rgba(34,197,94,0.10)",
+    border: "rgba(34,197,94,0.22)",
+    projectAnchor: "project-societe-forestiere",
+  },
+  {
+    name: "Street Nav",
+    image: "/images/streetnav.png",
+    category: "Application iOS",
+    initials: "SN",
+    color: "#0ea5e9",
+    bg: "rgba(14,165,233,0.10)",
+    border: "rgba(14,165,233,0.22)",
+    projectAnchor: "project-street-nav",
+  },
+  {
+    name: "WorldSkills Heroes",
+    image: "/images/worldskills.jpg",
+    category: "Plateforme Web",
+    initials: "WS",
+    color: "#8b5cf6",
+    bg: "rgba(139,92,246,0.10)",
+    border: "rgba(139,92,246,0.22)",
+    projectAnchor: "project-worldskills",
+  },
+  {
+    name: "HelloWork",
+    image: "/images/hellowork.png",
+    category: "Plateforme de recrutement",
+    initials: "HW",
+    color: "#8b5cf6",
+    bg: "rgba(139,92,246,0.10)",
+    border: "rgba(139,92,246,0.22)",
+    projectAnchor: "project-hellowork",
+  },
+  {
+    name: "Welcome to the jungle",
+    image: "/images/welcometothejungle.png",
+    category: "Plateforme de recrutement",
+    initials: "WJ",
+    color: "#8b5cf6",
+    bg: "rgba(139,92,246,0.10)",
+    border: "rgba(139,92,246,0.22)",
+    projectAnchor: "project-welcome",
+  },
 ];
 
-const categories = ["all", "frontend", "backend", "tools"];
+const stats = [
+  { value: "10+", label: "Clients accompagnés" },
+  { value: "1", label: "Année d'expérience" },
+  { value: "100%", label: "Projets livrés" },
+];
 
-const levelLabel = (level) => {
-  if (level >= 90) return "Expert";
-  if (level >= 75) return "Avancé";
-  if (level >= 60) return "Intermédiaire";
-  return "Débutant";
-};
+const BrandCard = ({ brand, onClick }) => (
+  <div
+    className="mx-3 sm:mx-3.5 group select-none flex items-center gap-3.5 shrink-0 relative"
+    style={{
+      padding: "10px 18px 10px 10px", borderRadius: 18,
+      background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.5)",
+      boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+      transition: "transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease, border-color 0.3s ease",
+      cursor: onClick ? "pointer" : "default",
+    }}
+    onClick={onClick}
+    onMouseEnter={e => {
+      e.currentTarget.style.transform = "translateY(-3px)";
+      e.currentTarget.style.boxShadow = `0 8px 28px rgba(0,0,0,0.10), 0 0 0 1px ${brand.border}`;
+      e.currentTarget.style.borderColor = brand.border;
+    }}
+    onMouseLeave={e => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
+      e.currentTarget.style.borderColor = "hsl(var(--border) / 0.5)";
+    }}
+  >
+    {/* Avatar */}
+    <div style={{
+      width: 52, height: 52, borderRadius: 13, overflow: "hidden", flexShrink: 0,
+      background: brand.bg, border: `1.5px solid ${brand.border}`,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      transition: "transform 0.3s cubic-bezier(.22,.68,0,1.2)",
+    }}>
+      {brand.image ? (
+        <img src={brand.image} alt={brand.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        <span style={{ fontSize: 14, fontWeight: 900, color: brand.color, letterSpacing: "-0.02em" }}>
+          {brand.initials}
+        </span>
+      )}
+    </div>
+
+    {/* Text */}
+    <div>
+      <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "hsl(var(--foreground))", whiteSpace: "nowrap", lineHeight: 1.3, transition: "color 0.2s ease" }}
+        onMouseEnter={e => e.currentTarget.style.color = brand.color}
+        onMouseLeave={e => e.currentTarget.style.color = "hsl(var(--foreground))"}
+      >
+        {brand.name}
+      </p>
+      <p style={{ margin: "3px 0 0", fontSize: 11, color: "hsl(var(--muted-foreground))", whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
+        {brand.category}
+      </p>
+    </div>
+
+  </div>
+);
+
+// Séparateur entre cartes
+const Dot = () => (
+  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "hsl(var(--border))", flexShrink: 0, margin: "0 6px", alignSelf: "center", display: "inline-block" }} />
+);
+
+const Row = ({ items, direction, duration, onBrandClick }) => (
+  <div style={{ display: "flex", overflow: "hidden", padding: "6px 0" }}>
+    <div
+      className={direction === "left" ? "marquee-left" : "marquee-right"}
+      style={{ display: "flex", alignItems: "center", animationDuration: `${duration}s` }}
+    >
+      {[...items, ...items, ...items].map((brand, i) => (
+        <span key={i} style={{ display: "flex", alignItems: "center" }}>
+          <BrandCard
+            brand={brand}
+            onClick={brand.projectAnchor ? () => onBrandClick(brand.projectAnchor) : undefined}
+          />
+          <Dot />
+        </span>
+      ))}
+    </div>
+  </div>
+);
 
 export const SkillsSection = () => {
-  const [activeCategory, setActiveCategory] = useState("all");
+  const navigate = useNavigate();
+  const [headerRef,  headerVisible]  = useReveal(0.1);
+  const [marqueeRef, marqueeVisible] = useReveal(0.05);
+  const [statsRef,   statsVisible]   = useReveal(0.1);
 
-  const filteredSkills = skills.filter(
-    (skill) => activeCategory === "all" || skill.category === activeCategory
-  );
+  const handleBrandClick = (anchor) => {
+    navigate("/projects", { state: { scrollTo: anchor } });
+  };
 
   return (
-    <section id="skills" className="py-24 px-4 relative bg-secondary/30">
-      <div className="container mx-auto max-w-5xl">
+    <section id="skills" className="py-24 md:py-32 relative overflow-hidden">
 
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12">
-            Nos <span className="text-gradient">Compétences</span>
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Des technologies modernes maîtrisées pour construire des solutions web
-            performantes et élégantes.
-          </p>
-        </div>
 
-        {/* Filter tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {categories.map((category) => {
-            const { label, icon: Icon } = categoryConfig[category];
-            const isActive = activeCategory === category;
-            return (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={cn(
-                  "inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all duration-300",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-[0_0_14px_rgba(139,92,246,0.45)] scale-105"
-                    : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground hover:scale-105"
-                )}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {label}
-              </button>
-            );
-          })}
-        </div>
+      {/* Header */}
+      <div ref={headerRef} className="container mx-auto max-w-3xl text-center mb-14 px-4">
+        <p style={rs(headerVisible, { delay: 0 })}
+          className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary mb-4">
+          Références
+        </p>
+        <h2 style={rs(headerVisible, { delay: 80 })}
+          className="text-3xl md:text-5xl font-extrabold tracking-tight leading-[1.1]">
+          Ils nous font{" "}
+          <span className="text-gradient">confiance</span>
+        </h2>
+        <p style={rs(headerVisible, { delay: 160 })}
+          className="mt-5 text-sm md:text-base text-muted-foreground leading-7 max-w-lg mx-auto">
+          Des projets variés, des clients exigeants. <br/>Voici certaines marques et organisations<br/>
+          avec lesquelles nous avons collaboré.
+        </p>
+      </div>
 
-        {/* Skills grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredSkills.map((skill, key) => {
-            const { icon: Icon, color, bg } = categoryConfig[skill.category];
-            const barGradient = categoryBarColor[skill.category];
-            return (
-              <div
-                key={key}
-                className="group bg-card border border-border rounded-xl p-5
-                           hover:border-primary/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.12)]
-                           transition-all duration-300"
-              >
-                {/* Skill name row */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className={cn("p-1.5 rounded-lg", bg, color)}>
-                      <Icon className="h-3.5 w-3.5" />
-                    </span>
-                    <h3 className="font-semibold text-foreground">{skill.name}</h3>
-                  </div>
-                  <span className="text-sm font-bold text-primary tabular-nums">
-                    {skill.level}%
-                  </span>
-                </div>
+      {/* Marquee */}
+      <div ref={marqueeRef} style={rs(marqueeVisible, { delay: 240 })} className="relative">
+        {/* Fade masks */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 sm:w-52 z-10" style={{ background: "linear-gradient(to right, hsl(var(--background)), transparent)" }} />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 sm:w-52 z-10" style={{ background: "linear-gradient(to left, hsl(var(--background)), transparent)" }} />
 
-                {/* Progress bar */}
-                <div className="w-full bg-secondary/60 h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className={cn("h-1.5 rounded-full bg-gradient-to-r transition-all duration-700", barGradient)}
-                    style={{ width: skill.level + "%" }}
-                  />
-                </div>
+        <Row items={brands} direction="left" duration={30} onBrandClick={handleBrandClick} />
+      </div>
 
-                {/* Level label */}
-                <div className="mt-2.5">
-                  <span className={cn("text-xs font-medium", color)}>
-                    {levelLabel(skill.level)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+      {/* Stats */}
+      <div ref={statsRef} className="container mx-auto max-w-2xl mt-16 px-4">
+        <div className="grid grid-cols-3 gap-3 sm:gap-5">
+          {stats.map((s, i) => (
+            <div
+              key={s.label}
+              style={{ ...{ boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }, ...rs(statsVisible, { delay: i * 100 }) }}
+              className="text-center py-6 px-3 rounded-2xl border border-border/40 bg-card/70 backdrop-blur-sm"
+            >
+              <p className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gradient leading-none">
+                {s.value}
+              </p>
+              <p className="mt-2.5 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest font-semibold">
+                {s.label}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes marquee-left {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-33.333%); }
+        }
+        @keyframes marquee-right {
+          from { transform: translateX(-33.333%); }
+          to   { transform: translateX(0); }
+        }
+        .marquee-left {
+          animation: marquee-left linear infinite;
+          will-change: transform;
+        }
+        .marquee-right {
+          animation: marquee-right linear infinite;
+          will-change: transform;
+        }
+        .marquee-left:hover,
+        .marquee-right:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 };

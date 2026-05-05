@@ -1,372 +1,355 @@
-import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, X, ExternalLink } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 
 const projects = [
   {
     id: 1,
-    title: "La Règle",
+    slug: "project-moovera",
+    title: "Moovera",
     description:
-      "Création d'un jeu mobile inspiré du concept Undercover, avec une expérience simple, rapide et pensée pour le jeu en groupe.",
-    longDescription:
-      "La Règle est un jeu mobile pensé pour les soirées entre amis. Inspiré du concept Undercover, chaque joueur reçoit un rôle secret et doit démasquer les autres avant d'être découvert. L'interface a été conçue pour être intuitive, rapide à prendre en main, et agréable visuellement. Le jeu supporte plusieurs modes de difficulté et des thèmes variés pour renouveler l'expérience à chaque partie.",
-    image: "/images/trouvelaregle.png",
-    images: [
-      "/images/trouvelaregle.png",
-      "/images/trouvelaregle.png",
-      "/images/trouvelaregle.png",
-    ],
-    tags: ["SwiftUI", "iOS", "Game"],
-    demoUrl: "#",
-    featured: true,
+      "Création de site vitrine pour une entreprise de réparation de trottinettes électriques.",
+    image: "/images/moovera.png",
+    tags: ["React", "TailwindCSS", "Vite"],
+    category: "Site Vitrine",
+    demoUrl: null,
   },
   {
     id: 2,
-    title: "WorldSkills Heroes",
+    slug: "project-worldskills",
+    title: "WorldSkills France",
     description:
-      "Développement d'un site dédié à des compétitions de métiers, avec une approche claire, structurée et accessible pour les visiteurs.",
-    longDescription:
-      "WorldSkills Heroes est une plateforme web dédiée aux compétitions internationales de métiers. Le site met en avant les participants, les disciplines et les résultats de manière claire et engageante. Une attention particulière a été portée à l'accessibilité et à la lisibilité pour toucher un public varié, des professionnels aux simples curieux. La structure modulaire permet une mise à jour facile du contenu entre chaque édition.",
+      "Développement d'un site dédié à des compétitions nationales de métiers, avec une approche claire et accessible.",
     image: "/images/worldskills.jpg",
-    images: [
-      "/images/worldskills.jpg",
-      "/images/worldskills.jpg",
-      "/images/worldskills.jpg",
-    ],
     tags: ["WordPress", "Elementor", "PHP"],
-    demoUrl: "#",
+    category: "Plateforme Web",
+    demoUrl: "https://www.worldskills-france.org",
   },
   {
     id: 3,
+    slug: "project-acan",
     title: "ACAN",
     description:
       "Conception d'un site associatif mettant en avant les informations essentielles, les actions menées et les points de contact.",
-    longDescription:
-      "Le site de l'ACAN a été conçu pour donner de la visibilité à une association engagée. L'enjeu principal était de structurer l'information de façon claire : présentation de l'association, actions menées sur le terrain, agenda des événements et formulaire de contact. Le design sobre et accessible reflète les valeurs de l'organisation tout en facilitant la navigation pour tous les publics.",
     image: "/images/acan.png",
-    images: [
-      "/images/acan.png",
-      "/images/acan.png",
-      "/images/acan.png",
-    ],
     tags: ["HTML", "JavaScript", "CSS"],
-    demoUrl: "#",
+    category: "Site Associatif",
+    demoUrl: "https://association-acan.web.app",
   },
   {
     id: 4,
+    slug: "project-street-nav",
     title: "Street Nav",
     description:
-      "Conception d'une application de navigation pour les personnes malvoyantes.",
-    longDescription:
-      "Street Nav est une application iOS de navigation urbaine pensée pour les personnes malvoyantes. Grâce à la réalité augmentée et aux retours haptiques, l'application guide l'utilisateur en temps réel dans la rue sans qu'il ait besoin de regarder son écran. Le projet a été développé avec une approche inclusive dès la phase de conception, en collaboration avec des associations spécialisées.",
+      "Application iOS de navigation pour les personnes malvoyantes, guidée par la réalité augmentée et les retours haptiques.",
     image: "/images/streetnav.png",
-    images: [
-      "/images/streetnav.png",
-      "/images/streetnav.png",
-      "/images/streetnav.png",
-    ],
     tags: ["iOS", "SwiftUI", "ARKit"],
-    demoUrl: "#",
+    category: "Application iOS",
+    demoUrl: "https://apps.apple.com/fr/app/streetnav/id6472163282",
   },
   {
     id: 5,
+    slug: "project-societe-forestiere",
     title: "Société Forestière",
     description:
-      "Refonte du site de la société forestière, une entreprise qui vous accompagne dans l'achat, la vente et la gestion de votre forêt.",
-    longDescription:
-      "Refonte complète du site web de la Société Forestière, spécialisée dans l'achat, la vente et la gestion de forêts privées. L'objectif était de moderniser l'image de l'entreprise tout en conservant la confiance et le sérieux attendus dans ce secteur. Le nouveau site met en avant les services proposés, les références clients et simplifie la prise de contact. La migration vers Drupal a également amélioré la gestion des contenus en interne.",
+      "Refonte du site web d'une entreprise spécialisée dans l'achat, la vente et la gestion de forêts privées en France.",
     image: "/images/societeforestiere.png",
-    images: [
-      "/images/societeforestiere.png",
-      "/images/societeforestiere.png",
-      "/images/societeforestiere.png",
-    ],
     tags: ["Drupal", "PHP"],
-    demoUrl: "#",
+    category: "Site Institutionnel",
+    demoUrl: "https://www.forestiere-cdc.fr",
+  },
+  {
+    id: 6,
+    slug: "project-the-rule",
+    title: "The Rule",
+    description:
+      "Création d'un jeu mobile inspiré du concept Undercover, avec une expérience simple et pensée pour le jeu en groupe.",
+    image: "/images/homerule.png",
+    tags: ["SwiftUI", "iOS", "Game"],
+    category: "Jeu Mobile",
+    demoUrl: "https://apps.apple.com/fr/app/the-rule/id6762176928",
+  },
+  {
+    id: 7,
+    slug: "project-welcome",
+    title: "Welcome to the jungle",
+    description: "Plateforme de recrutement",
+    image: "/images/welcometothejungle.png",
+    tags: ["HTML", "CSS", "JS"],
+    category: "Refonte de site",
+    demoUrl: "https://www.welcometothejungle.com/fr",
+  },
+  {
+    id: 8,
+    slug: "project-hellowork",
+    title: "HelloWork",
+    description: "Plateforme de recrutement",
+    image: "/images/hellowork.png",
+    tags: ["React"],
+    category: "Refonte de site",
+    demoUrl: "https://www.hellowork.com/",
   },
 ];
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
-const ProjectModal = ({ project, onClose }) => {
-  const [activeImg, setActiveImg] = useState(0);
-
-  // Fermeture Escape
+// ─── Scroll-reveal hook ───────────────────────────────────────────────────────
+const useReveal = (threshold = 0.1) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, visible];
+};
 
-  // Bloquer le scroll body
+// ─── Card ─────────────────────────────────────────────────────────────────────
+const ProjectCard = ({ project, index, delay = 0, highlight = false }) => {
+  const [hovered, setHovered] = useState(false);
+  const [lit, setLit] = useState(false);
+  const [ref, visible] = useReveal();
+
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
+    if (!highlight) return;
+    const t1 = setTimeout(() => setLit(true), 400);
+    const t2 = setTimeout(() => setLit(false), 2800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [highlight]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-      onClick={onClose}
+    <article
+      id={project.slug}
+      ref={ref}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden cursor-pointer"
+      style={{
+        aspectRatio: "4/5",
+        borderRadius: 28,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(52px)",
+        transition: `opacity 0.8s ease ${delay}ms, transform 0.85s cubic-bezier(.22,.68,0,1.2) ${delay}ms, box-shadow 0.6s ease, border-color 0.6s ease`,
+        border: lit
+          ? "1px solid hsl(var(--primary)/0.7)"
+          : hovered ? "1px solid hsl(var(--primary)/0.35)" : "1px solid hsl(var(--border)/0.6)",
+        boxShadow: lit
+          ? "0 0 0 5px hsl(var(--primary)/0.18), 0 24px 60px rgba(0,0,0,0.20)"
+          : hovered ? "0 28px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.12)" : "0 6px 28px rgba(0,0,0,0.09)",
+      }}
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      {/* ── Image ── */}
+      <img
+        src={project.image}
+        alt={project.title}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          transform: hovered ? "scale(1.08)" : "scale(1.01)",
+          transition: "transform 0.8s cubic-bezier(.4,0,.2,1)",
+        }}
+      />
 
-      {/* Panel */}
+      {/* ── Gradient overlay (deepens on hover) ── */}
       <div
-        className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-border/60 bg-card shadow-[0_30px_80px_rgba(0,0,0,0.25)] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          aria-label="Fermer"
-          className="absolute right-4 top-4 z-20 flex items-center justify-center w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        className="absolute inset-0"
+        style={{
+          background: hovered
+            ? "linear-gradient(to top, rgba(0,0,0,0.93) 0%, rgba(0,0,0,0.52) 45%, rgba(0,0,0,0.08) 100%)"
+            : "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+          transition: "background 0.5s ease",
+        }}
+      />
 
-        {/* Image principale */}
-        <div className="relative h-[220px] sm:h-[300px] md:h-[360px] w-full shrink-0 overflow-hidden rounded-t-2xl sm:rounded-t-3xl">
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-          {project.featured && (
-            <div className="absolute left-4 top-4 z-20 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md">
-              Featured
-            </div>
-          )}
-          <img
-            src={project.images[activeImg]}
-            alt={`${project.title} - vue ${activeImg + 1}`}
-            className="w-full h-full object-cover transition-opacity duration-300"
-          />
+      {/* ── Ghost number ── */}
+      <span
+        className="absolute top-4 right-5 font-black tabular-nums select-none leading-none pointer-events-none"
+        style={{ fontSize: "5rem", color: "rgba(255,255,255,0.07)", lineHeight: 1 }}
+      >
+        {String(index + 1).padStart(2, "0")}
+      </span>
+
+      {/* ── Category label top-left ── */}
+      <span className="absolute top-5 left-5 text-[9px] font-bold uppercase tracking-[0.3em] text-white/50">
+        {project.category}
+      </span>
+
+      {/* ── Bottom content ── */}
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-3.5">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-white/15 bg-white/10 backdrop-blur-sm px-2.5 py-0.5 text-[10px] font-semibold text-white/70 tracking-wide"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
 
-        {/* Miniatures */}
-        {project.images.length > 1 && (
-          <div className="flex gap-2 px-5 sm:px-7 pt-4">
-            {project.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImg(i)}
-                className={`h-14 w-20 sm:h-16 sm:w-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200 ${
-                  i === activeImg
-                    ? "border-primary opacity-100"
-                    : "border-border/40 opacity-50 hover:opacity-80"
-                }`}
-              >
-                <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Title */}
+        <h3
+          className="text-[22px] font-extrabold tracking-tight text-white leading-[1.2]"
+          style={{
+            transform: hovered ? "translateY(-6px)" : "translateY(0)",
+            transition: "transform 0.45s cubic-bezier(.4,0,.2,1)",
+          }}
+        >
+          {project.title}
+        </h3>
 
-        {/* Contenu texte */}
-        <div className="p-5 sm:p-7 flex flex-col gap-4">
-          {/* Tags */}
-          <div className="flex flex-wrap gap-1.5">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-border/60 bg-background/70 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Titre */}
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight leading-snug">
-            {project.title}
-          </h3>
-
-          {/* Description longue */}
-          <p className="text-sm sm:text-base leading-7 text-muted-foreground">
-            {project.longDescription}
-          </p>
-
-          {/* CTA */}
-          <a
-            href={project.demoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 self-start rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95"
+        {/* Slide-up: description + CTA */}
+        <div
+          style={{
+            maxHeight: hovered ? "200px" : "0px",
+            overflow: "hidden",
+            transition: "max-height 0.5s cubic-bezier(.4,0,.2,1)",
+          }}
+        >
+          <div
+            className="rounded-2xl mt-3 px-4 py-3.5"
+            style={{
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
+            }}
           >
-            Voir le projet
-            <ExternalLink className="w-4 h-4" />
-          </a>
+            <p className="text-sm leading-[1.8] text-foreground/75 line-clamp-3">
+              {project.description}
+            </p>
+
+            <div className="mt-3">
+              {project.demoUrl ? (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-2 bg-primary text-white font-bold text-sm px-5 py-2 rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
+                  style={{ boxShadow: "0 4px 16px hsl(var(--primary)/0.35)" }}
+                >
+                  Voir le projet <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <span className="inline-flex items-center gap-2 text-muted-foreground/60 text-sm font-semibold px-5 py-2 rounded-full border border-border/60 bg-muted/40">
+                  Bientôt disponible
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
 // ─── Section ──────────────────────────────────────────────────────────────────
-export const ProjectsSection = () => {
-  const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
-  const [direction, setDirection] = useState("right");
-  const [modalProject, setModalProject] = useState(null);
+export const ProjectsSection = ({ highlightSlug = null }) => {
+  const [headRef, headVisible] = useReveal(0.05);
 
-  const go = useCallback(
-    (next, dir) => {
-      if (animating) return;
-      setDirection(dir);
-      setAnimating(true);
-      setTimeout(() => {
-        setCurrent(next);
-        setAnimating(false);
-      }, 350);
-    },
-    [animating]
-  );
-
-  const prev = (e) => { e.stopPropagation(); go((current - 1 + projects.length) % projects.length, "left"); };
-  const next = (e) => { e.stopPropagation(); go((current + 1) % projects.length, "right"); };
-
-  useEffect(() => {
-    if (modalProject) return;
-    const handler = (e) => {
-      if (e.key === "ArrowLeft") go((current - 1 + projects.length) % projects.length, "left");
-      if (e.key === "ArrowRight") go((current + 1) % projects.length, "right");
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [current, animating, modalProject]);
-
-  const project = projects[current];
-
-  const slideClass = animating
-    ? direction === "right"
-      ? "opacity-0 translate-x-6"
-      : "opacity-0 -translate-x-6"
-    : "opacity-100 translate-x-0";
+  const left  = projects.filter((_, i) => i % 2 === 0);
+  const right = projects.filter((_, i) => i % 2 === 1);
 
   return (
-    <>
-      <section id="projects" className="relative py-24 md:py-32 px-4 overflow-hidden">
-        <div className="container mx-auto max-w-5xl relative z-10">
+    <section id="projects" className="relative pb-24 md:pb-32 px-4 overflow-hidden">
 
-          {/* Header */}
-          <div className="mx-auto mb-14 max-w-2xl text-center md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-              Nos{" "}
-              <span className="text-gradient"> Préstations</span>
-            </h2>
-            <p className="mt-5 text-sm md:text-base leading-7 text-muted-foreground">
-              Voici quelques réalisations récentes en web et mobile. Chaque projet
-              a été pensé avec une attention particulière portée à l'interface, à
-              la clarté, aux performances et à l'expérience utilisateur.
+
+      <div className="container mx-auto max-w-5xl">
+
+        {/* ── Hero Header ── */}
+        <div
+          ref={headRef}
+          className="pt-2 pb-16 md:pb-20"
+          style={{
+            opacity: headVisible ? 1 : 0,
+            transform: headVisible ? "translateY(0)" : "translateY(28px)",
+            transition: "opacity 0.9s ease, transform 0.9s cubic-bezier(.22,.68,0,1.2)",
+          }}
+        >
+          {/* Eyebrow line 
+          <div className="flex items-center gap-3 mb-6">
+            <span className="h-px w-12 bg-gradient-to-r from-primary to-primary/30" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.45em] text-primary">
+              Portfolio · {projects.length} projets
+            </span>
+          </div>*/}
+
+          {/* Main title */}
+          <div className="overflow-hidden mb-8">
+            <h1
+              className="font-extrabold tracking-tight leading-[0.95]"
+              style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
+            >
+              <span className="block text-foreground/40 text-[0.55em] font-bold tracking-[0.05em] mb-2">
+                Nos
+              </span>
+              <span className="text-gradient">Réalisations</span>
+            </h1>
+          </div>
+
+          {/* Bottom row: description + stats */}
+          <div className="flex flex-col md:flex-row md:items-end gap-8 md:gap-0 md:justify-between">
+            <p className="text-base md:text-[17px] leading-[1.8] text-muted-foreground max-w-sm">
+            Des projets pensés pour répondre <br />aux besoins concrets de nos clients<br />avec exigence et créativité.
             </p>
-          </div>
 
-          {/* Carousel row */}
-          <div className="flex items-center gap-2 sm:gap-4">
-
-            {/* Prev */}
-            <button
-              onClick={prev}
-              aria-label="Projet précédent"
-              className="shrink-0 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-border/60 bg-card/70 backdrop-blur-sm text-muted-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:text-primary hover:scale-105 active:scale-95"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-
-            {/* Card cliquable */}
-            <div className="flex-1 min-w-0">
-              <article
-                onClick={() => setModalProject(project)}
-                className={`group cursor-pointer overflow-hidden rounded-2xl sm:rounded-3xl border border-border/60 bg-card/70 backdrop-blur-sm shadow-[0_10px_40px_rgba(0,0,0,0.08)] flex flex-col
-                  hover:border-primary/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.14)] transition-shadow duration-300
-                  ${slideClass}`}
-                style={{ transition: "opacity 350ms ease, transform 350ms ease, box-shadow 300ms ease, border-color 300ms ease" }}
-              >
-                {/* Image */}
-                <div className="relative h-[220px] sm:h-[280px] md:h-[360px] lg:h-[420px] w-full shrink-0 overflow-hidden">
-                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
-
-                  {/* Overlay "Voir le projet" au hover */}
-                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors duration-300">
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm px-5 py-2 text-sm font-medium text-white">
-                      Voir le projet
-                    </span>
-                  </div>
-
-                  {project.featured && (
-                    <div className="absolute left-4 top-4 z-30 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md">
-                      Featured
-                    </div>
-                  )}
-
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+            {/* Stats */}
+            <div className="flex items-stretch gap-3">
+              {[
+                { n: "8", label: "Projets" },
+                { n: "100%", label: "Livrés" },
+                { n: "1+", label: "An d'XP" },
+              ].map((s, i) => (
+                <div
+                  key={s.label}
+                  className="flex flex-col items-center justify-center px-5 py-3.5 rounded-2xl border border-border/50 bg-card/70 backdrop-blur-sm min-w-[80px]"
+                  style={{
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                    opacity: headVisible ? 1 : 0,
+                    transform: headVisible ? "translateY(0)" : "translateY(16px)",
+                    transition: `opacity 0.7s ease ${300 + i * 80}ms, transform 0.7s cubic-bezier(.22,.68,0,1.2) ${300 + i * 80}ms`,
+                  }}
+                >
+                  <span className="text-2xl font-extrabold tracking-tight text-gradient leading-none">{s.n}</span>
+                  <span className="text-[9px] text-muted-foreground uppercase tracking-widest mt-1.5 font-bold">{s.label}</span>
                 </div>
-
-                {/* Content */}
-                <div className="p-5 sm:p-6 md:p-7">
-                  <div className="mb-3 flex flex-wrap gap-1.5 sm:gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-border/60 bg-background/70 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight leading-snug">
-                    {project.title}
-                  </h3>
-
-                  <p className="mt-2 sm:mt-3 text-sm leading-6 sm:leading-7 text-muted-foreground line-clamp-3">
-                    {project.description}
-                  </p>
-                </div>
-              </article>
-            </div>
-
-            {/* Next */}
-            <button
-              onClick={next}
-              aria-label="Projet suivant"
-              className="shrink-0 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-border/60 bg-card/70 backdrop-blur-sm text-muted-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:text-primary hover:scale-105 active:scale-95"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </div>
-
-          {/* Dots + counter */}
-          <div className="mt-6 sm:mt-8 flex flex-col items-center gap-2">
-            <div className="flex gap-2">
-              {projects.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => go(i, i > current ? "right" : "left")}
-                  aria-label={`Aller au projet ${i + 1}`}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === current
-                      ? "w-6 h-2 bg-primary"
-                      : "w-2 h-2 bg-border hover:bg-muted-foreground"
-                  }`}
-                />
               ))}
             </div>
-            <p className="text-xs text-muted-foreground tabular-nums">
-              {current + 1} / {projects.length}
-            </p>
+          </div>
+
+          {/* Separator */}
+          <div className="mt-10 flex items-center gap-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-border/30" />
+            <span className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-widest">
+              {new Date().getFullYear()}
+            </span>
+            <div className="flex-1 h-px bg-border/30" />
+          </div>
+        </div>
+
+        {/* ── Staggered 2-col grid ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 md:gap-x-8 md:gap-y-8 items-start">
+
+          {/* Left column — offset */}
+          <div className="flex flex-col gap-6 md:gap-8 sm:mt-20">
+            {left.map((p, i) => (
+              <ProjectCard key={p.id} project={p} index={p.id - 1} delay={i * 100} highlight={highlightSlug === p.slug} />
+            ))}
+          </div>
+
+          {/* Right column */}
+          <div className="flex flex-col gap-6 md:gap-8">
+            {right.map((p, i) => (
+              <ProjectCard key={p.id} project={p} index={p.id - 1} delay={i * 100 + 120} highlight={highlightSlug === p.slug} />
+            ))}
           </div>
 
         </div>
-      </section>
-
-      {/* Modal */}
-      {modalProject && (
-        <ProjectModal
-          project={modalProject}
-          onClose={() => setModalProject(null)}
-        />
-      )}
-    </>
+      </div>
+    </section>
   );
 };

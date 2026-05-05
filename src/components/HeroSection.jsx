@@ -38,8 +38,8 @@ export const HeroSection = () => {
 
           {/* CTAs */}
           <div className="pt-2 opacity-0 animate-fade-in-delay-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="#projects" className="cosmic-button text-base px-8 py-3">
-              Nos Conceptions
+            <a href="/projects" className="cosmic-button text-base px-8 py-3">
+              Nos Projets
             </a>
             <a
               href="#contact"

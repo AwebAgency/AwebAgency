@@ -1,27 +1,33 @@
 import { ArrowUp } from "lucide-react";
+import { useReveal, rs } from "../hooks/useReveal";
 
 const navLinks = [
-  { name: "Accueil", href: "#hero" },
-  { name: "À propos", href: "#about" },
-  { name: "Compétences", href: "#skills" },
-  { name: "Projets", href: "#projects" },
-  { name: "Contact", href: "#contact" },
+  { name: "Accueil", href: "/" },
+  { name: "À propos", href: "/#about" },
+  { name: "Références", href: "/#skills" },
+  { name: "Projets", href: "/projects" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export const Footer = () => {
+  const [footerRef, footerVisible] = useReveal(0.1);
+
   return (
-    <footer className="relative border-t border-border/60 bg-card/50 backdrop-blur-sm">
+    <footer className="relative border-t border-border/30">
       <div className="container mx-auto max-w-6xl px-4 py-12">
-        <div className="flex flex-col items-center gap-8">
+        <div ref={footerRef} className="flex flex-col items-center gap-8">
 
           {/* Brand */}
-          <a href="#hero" className="text-xl font-bold">
-            <span className="text-foreground">Aweb</span>
-            <span className="text-primary"> Agency</span>
+          <a href="/" style={rs(footerVisible, { delay: 0 })} className="flex items-center">
+            <img
+              src="/images/logo.svg"
+              alt="AwebAgency"
+              className="logo-adaptive h-20 w-auto"
+            />
           </a>
 
           {/* Nav links */}
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+          <nav style={rs(footerVisible, { delay: 80 })} className="flex flex-wrap justify-center gap-x-8 gap-y-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -34,20 +40,20 @@ export const Footer = () => {
           </nav>
 
           {/* Divider */}
-          <div className="w-full h-px bg-border/50" />
+          <div style={rs(footerVisible, { delay: 140 })} className="w-full h-px bg-border/50" />
 
           {/* Bottom row */}
-          <div className="flex w-full items-center justify-between">
+          <div style={rs(footerVisible, { delay: 180 })} className="flex w-full items-center justify-between">
             <p className="text-xs text-muted-foreground">
               &copy; {new Date().getFullYear()} AwebAgency. Tous droits réservés.
             </p>
-            <a
-              href="#hero"
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="flex items-center justify-center rounded-full border border-border/60 bg-background/70 p-2.5 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary"
               aria-label="Retour en haut"
             >
               <ArrowUp size={16} />
-            </a>
+            </button>
           </div>
 
         </div>
