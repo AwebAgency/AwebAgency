@@ -82,7 +82,7 @@ const projects = [
     id: 8,
     slug: "project-hellowork",
     title: "HelloWork",
-    description: "Plateforme de recrutement",
+    description: "Refonte d'une plateforme de recrutement",
     image: "/images/hellowork.png",
     tags: ["React"],
     category: "Refonte de site",

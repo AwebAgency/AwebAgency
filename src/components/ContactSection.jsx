@@ -75,7 +75,7 @@ export const ContactSection = () => {
   const [rightRef,  rightVisible]  = useReveal(0.06);
 
   return (
-    <section id="contact" className="relative overflow-hidden py-24 md:py-32 px-4">
+    <section id="contact" className="relative overflow-hidden py-16 md:py-20 px-4">
       <div className="container mx-auto max-w-6xl relative z-10">
 
         {/* ── Header ── */}
